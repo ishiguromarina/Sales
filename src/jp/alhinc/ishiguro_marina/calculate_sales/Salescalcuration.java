@@ -24,85 +24,22 @@ public class Salescalcuration {
 			return;
 		}
 
+
 //1.支店定義ファイルの読み込み
 		HashMap<String,String> branchNameMap = new HashMap<String,String>();
 		HashMap<String,Long> branchSaleMap = new HashMap<String,Long>();
 		BufferedReader br = null;
-		try{
-			String fileSeparator = System.getProperty( "file.separator" );
-			File file = new File (args[0]+ fileSeparator + "branch.lst");
-
-	        if(!file.exists()){
-	        	System.out.println("支店定義ファイルが存在しません");
-	        	return;
-        	}
-			FileReader fr = new FileReader(file);
-			br = new BufferedReader (fr);
-			String s;
-			while((s = br.readLine()) != null){
-
-				String[] branchdata = s.split(",");
-				if(!branchdata[0].matches("^[0-9]{3}$") || (branchdata.length != 2)){
-		        	System.out.println("支店定義ファイルのフォーマットが不正です");
-		        	return;
-		        }
-				branchNameMap.put(branchdata[0],branchdata[1]);
-				branchSaleMap.put(branchdata[0],0L);
-
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!fileinput(args[0],"branch.lst",branchNameMap,branchSaleMap,"^[0-9]{3}$","支店")){
 			return;
-		}finally{
-			try{
-				if(br != null){
-					br.close();
-				}
-			}catch(IOException e){
-				System.out.println("予期せぬエラーが発生しました");
-				return;
-			}
 		}
-
 
 
 //2.商品定義ファイルの読み込み
 		HashMap<String,String> commodityNameMap = new HashMap<String,String>();
 		HashMap<String,Long> commoditySaleMap = new HashMap<String,Long>();
-		try{
-			String fileSeparator = System.getProperty( "file.separator" );
-	        //System.out.println( "file.separator=" + fileSeparator );
-			File file = new File (args[0]+ fileSeparator + "commodity.lst");
 
-	        if(!file.exists()){
-	        	System.out.println("商品定義ファイルが存在しません");
-        		return;
-	        }
-			FileReader fr = new FileReader(file);
-			br = new BufferedReader (fr);
-			String s;
-			while((s = br.readLine()) != null){
-				String[] commoditydata = s.split(",");
-
-				if(!commoditydata[0].matches("^\\w{8}$") || (commoditydata.length != 2) ){
-		        	System.out.println("商品定義ファイルのフォーマットが不正です");
-		        	return;
-	        	}
-				commodityNameMap.put(commoditydata[0],commoditydata[1]);
-				commoditySaleMap.put(commoditydata[0],0L);
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!fileinput(args[0],"commodity.lst",commodityNameMap,commoditySaleMap,"^\\w{8}$","商品")){
 			return;
-		}finally{
-			try{
-				if(br != null){
-					br.close();
-				}
-			}catch(IOException e){
-				System.out.println("予期せぬエラーが発生しました");
-				return;
-			}
 		}
 
 
@@ -111,6 +48,7 @@ public class Salescalcuration {
 		ArrayList<File> rcdlist = new ArrayList<>();
 		File dr = new File(args[0]);
 		File[] fl = dr.listFiles();
+
 
 		try{
 			for (int i = 0 ; i < fl.length ; i++){
@@ -150,52 +88,59 @@ public class Salescalcuration {
 				String sales;
 
 
-					FileReader fr = new FileReader(rcdlist.get(i));
-					br = new BufferedReader (fr);
+				FileReader fr = new FileReader(rcdlist.get(i));
+				br = new BufferedReader (fr);
 
-					if((branchcode = br.readLine()) == null){
-						System.out.println(rcdlist.get(i).getName()+"の支店コードが不正です");
-						return;
-					}
-					if((commoditycode = br.readLine()) == null){
-						System.out.println(rcdlist.get(i).getName()+"の商品コードが不正です");
-						return;
-					}
+				if((branchcode = br.readLine()) == null){
+					System.out.println(rcdlist.get(i).getName()+"の支店コードのフォーマットが不正です");
+					return;
+				}
+				if((commoditycode = br.readLine()) == null){
+					System.out.println(rcdlist.get(i).getName()+"の商品コードのフォーマットが不正です");
+					return;
+				}
 
-					if(!branchSaleMap.containsKey(branchcode)) {
-						System.out.println(rcdlist.get(i).getName()+"の支店コードが不正です");
-						return;
-					}
-					if(!commoditySaleMap.containsKey(commoditycode)) {
-						System.out.println(rcdlist.get(i).getName()+"の商品コードが不正です");
-						return;
-					}
+				sales = br.readLine();
+				if(sales == null){
+					System.out.println("売り上げ金額のフォーマットが不正です");
+					return;
+				}
 
-					sales = br.readLine();
-					if(sales == null || !sales.matches("\\d{1,}")){
-						System.out.println("予期せぬエラーが発生しました1");
-						return;
-					}
+				if(!branchSaleMap.containsKey(branchcode)) {
+					System.out.println(rcdlist.get(i).getName()+"の支店コードが不正です");
+					return;
+				}
+				if(!commoditySaleMap.containsKey(commoditycode)) {
+					System.out.println(rcdlist.get(i).getName()+"の商品コードが不正です");
+					return;
+				}
 
-					if((br.readLine()) != null){
-						System.out.println(rcdlist.get(i).getName()+"のフォーマットが不正です");
-						return;
-					}
-
-		//型変換、変数指定
-					Long aaa = Long.parseLong(sales);
-					Long totalbranch = aaa + branchSaleMap.get(branchcode);
-					Long totalcommodity = aaa + commoditySaleMap.get(commoditycode);
+				if( !sales.matches("\\d{1,}")){
+					System.out.println("予期せぬエラーが発生しました");
+					return;
+				}
 
 
-		//マップ代入
-					branchSaleMap.put(branchcode,totalbranch);
-					commoditySaleMap.put(commoditycode,totalcommodity);
 
-					if(totalbranch >= 10000000000L || totalcommodity >= 10000000000L){
-						System.out.println("合計金額が10桁を超えました");
-						return;
-					}
+				if((br.readLine()) != null){
+					System.out.println(rcdlist.get(i).getName()+"のフォーマットが不正です");
+					return;
+				}
+
+	//型変換、変数指定
+				Long aaa = Long.parseLong(sales);
+				Long totalbranch = aaa + branchSaleMap.get(branchcode);
+				Long totalcommodity = aaa + commoditySaleMap.get(commoditycode);
+
+
+	//マップ代入
+				branchSaleMap.put(branchcode,totalbranch);
+				commoditySaleMap.put(commoditycode,totalcommodity);
+
+				if(totalbranch >= 10000000000L || totalcommodity >= 10000000000L){
+					System.out.println("合計金額が10桁を超えました");
+					return;
+				}
 			}
 		}catch(IOException e){
 			System.out.println("予期せぬエラーが発生しました");
@@ -212,17 +157,30 @@ public class Salescalcuration {
 		}
 
 
-
 //4.集計結果出力
 	//branch出力
+		fileoutput (args[0],"branch.out",branchNameMap,branchSaleMap);
+		if(!fileoutput (args[0],"branch.out",branchNameMap,branchSaleMap)){
+			return;
+		}
+
+	//commodity出力
+		fileoutput (args[0],"commodity.out",commodityNameMap,branchSaleMap);
+		if(!fileoutput (args[0],"commodity.out",commodityNameMap,branchSaleMap)){
+			return;
+		}
+	}
+
+//メッソド分け(集計結果出力)
+	public static boolean fileoutput (String dirPass,String fileName,HashMap<String,String> NameMap,HashMap<String,Long> SaleMap){
 		String fileSeparator = System.getProperty("file.separator");
-		File branchfile = new File(args[0]+ fileSeparator+"branch.out");
+		File branchfile = new File(dirPass+ fileSeparator+fileName);
 		BufferedWriter bw = null;
 		try{
 			FileWriter fw = new FileWriter (branchfile);
 			bw = new BufferedWriter(fw);
 
-			List<Map.Entry<String,Long>> entries =new ArrayList<Map.Entry<String,Long>>(branchSaleMap.entrySet());
+			List<Map.Entry<String,Long>> entries =new ArrayList<Map.Entry<String,Long>>(SaleMap.entrySet());
 			Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {
 
 	            public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2) {
@@ -231,36 +189,13 @@ public class Salescalcuration {
 	        });
 
 			for (Entry<String,Long> s : entries) {
-			bw.write(s.getKey() + "," + branchNameMap.get(s.getKey()) + "," + s.getValue());
+			bw.write(s.getKey() + "," + NameMap.get(s.getKey()) + "," + s.getValue());
 			bw.newLine();
 			}
 			bw.close();
 		}catch(IOException e){
 			System.out.println("予期せぬエラーが発生しました");
-			return;
-		}
-
-	//commodity出力
-		File commodityfile = new File(args[0]+ fileSeparator+"commodity.out");
-		try{
-			FileWriter fw = new FileWriter (commodityfile);
-			bw = new BufferedWriter(fw);
-
-			List<Map.Entry<String,Long>> entries =new ArrayList<Map.Entry<String,Long>>(commoditySaleMap.entrySet());
-			Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {
-	            public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2) {
-	                return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
-	            }
-	        });
-
-			for (Entry<String,Long> s : entries) {
-			bw.write(s.getKey() + "," + commodityNameMap.get(s.getKey()) + "," + s.getValue());
-			bw.newLine();
-			}
-
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
-			return;
+			return false;
 		}finally{
 			try{
 				if(bw != null){
@@ -268,9 +203,49 @@ public class Salescalcuration {
 				}
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
-				return;
 			}
 		}
+		return true;
+	}
+
+//メソッド分け(ファイルの読み込み)
+	public static boolean fileinput (String dirPass,String fileName,HashMap<String,String> NameMap,HashMap<String,Long> SaleMap,String judge,String Name){
+
+		BufferedReader br = null;
+		try{
+			String fileSeparator = System.getProperty( "file.separator" );
+			File file = new File (dirPass+ fileSeparator + fileName);
+
+	        if(!file.exists()){
+	        	System.out.println(Name + "定義ファイルが存在しません");
+	        	return false;
+	    	}
+			FileReader fr = new FileReader(file);
+			br = new BufferedReader (fr);
+			String s;
+			while((s = br.readLine()) != null){
+
+				String[] data = s.split(",");
+				if(!data[0].matches(judge) || (data.length != 2)){
+		        	System.out.println(Name + "定義ファイルのフォーマットが不正です");
+		        	return false;
+		        }
+				NameMap.put(data[0],data[1]);
+				SaleMap.put(data[0],0L);
+
+			}
+		}catch(IOException e){
+			System.out.println("予期せぬエラーが発生しました");
+			return false;
+		}finally{
+			try{
+				if(br != null){
+					br.close();
+				}
+			}catch(IOException e){
+				System.out.println("予期せぬエラーが発生しました");
+			}
+		}
+		return true;
 	}
 }
-

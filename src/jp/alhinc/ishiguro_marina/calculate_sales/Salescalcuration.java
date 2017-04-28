@@ -24,6 +24,8 @@ public class Salescalcuration {
 			return;
 		}
 
+
+
 //1.支店定義ファイルの読み込み
 		HashMap<String,String> branchNameMap = new HashMap<String,String>();
 		HashMap<String,Long> branchSaleMap = new HashMap<String,Long>();
@@ -154,11 +156,17 @@ public class Salescalcuration {
 					br = new BufferedReader (fr);
 
 					if((branchcode = br.readLine()) == null){
-						System.out.println(rcdlist.get(i).getName()+"の支店コードが不正です");
+						System.out.println(rcdlist.get(i).getName()+"の支店コードのフォーマットが不正です");
 						return;
 					}
 					if((commoditycode = br.readLine()) == null){
-						System.out.println(rcdlist.get(i).getName()+"の商品コードが不正です");
+						System.out.println(rcdlist.get(i).getName()+"の商品コードのフォーマットが不正です");
+						return;
+					}
+
+					sales = br.readLine();
+					if(sales == null){
+						System.out.println("売り上げ金額のフォーマットが不正です");
 						return;
 					}
 
@@ -171,11 +179,12 @@ public class Salescalcuration {
 						return;
 					}
 
-					sales = br.readLine();
-					if(sales == null || !sales.matches("\\d{1,}")){
-						System.out.println("予期せぬエラーが発生しました1");
+					if( !sales.matches("\\d{1,}")){
+						System.out.println("予期せぬエラーが発生しました");
 						return;
 					}
+
+
 
 					if((br.readLine()) != null){
 						System.out.println(rcdlist.get(i).getName()+"のフォーマットが不正です");

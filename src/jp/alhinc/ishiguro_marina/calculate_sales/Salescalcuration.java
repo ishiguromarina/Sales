@@ -24,8 +24,7 @@ public class Salescalcuration {
 			return;
 		}
 
-
-//1.支店定義ファイルの読み込み
+		//1.支店定義ファイルの読み込み
 		HashMap<String,String> branchNameMap = new HashMap<String,String>();
 		HashMap<String,Long> branchSaleMap = new HashMap<String,Long>();
 		BufferedReader br = null;
@@ -34,7 +33,7 @@ public class Salescalcuration {
 		}
 
 
-//2.商品定義ファイルの読み込み
+		//2.商品定義ファイルの読み込み
 		HashMap<String,String> commodityNameMap = new HashMap<String,String>();
 		HashMap<String,Long> commoditySaleMap = new HashMap<String,Long>();
 
@@ -43,8 +42,8 @@ public class Salescalcuration {
 		}
 
 
-//3.集計
-	//ファイル入力
+		//3.集計
+		//ファイル入力
 		ArrayList<File> rcdlist = new ArrayList<>();
 		File dr = new File(args[0]);
 		File[] fl = dr.listFiles();
@@ -141,6 +140,7 @@ public class Salescalcuration {
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
+
 			}
 		}catch(IOException e){
 			System.out.println("予期せぬエラーが発生しました");

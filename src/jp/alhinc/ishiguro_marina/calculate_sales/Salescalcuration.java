@@ -32,7 +32,6 @@ public class Salescalcuration {
 			return;
 		}
 
-
 		//2.商品定義ファイルの読み込み
 		HashMap<String,String> commodityNameMap = new HashMap<String,String>();
 		HashMap<String,Long> commoditySaleMap = new HashMap<String,Long>();
@@ -101,7 +100,7 @@ public class Salescalcuration {
 
 				sales = br.readLine();
 				if(sales == null){
-					System.out.println("売り上げ金額のフォーマットが不正です");
+					System.out.println(rcdlist.get(i).getName()+"のフォーマットが不正です");
 					return;
 				}
 
@@ -118,8 +117,6 @@ public class Salescalcuration {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-
-
 
 				if((br.readLine()) != null){
 					System.out.println(rcdlist.get(i).getName()+"のフォーマットが不正です");
@@ -159,14 +156,12 @@ public class Salescalcuration {
 
 //4.集計結果出力
 	//branch出力
-		fileoutput (args[0],"branch.out",branchNameMap,branchSaleMap);
 		if(!fileoutput (args[0],"branch.out",branchNameMap,branchSaleMap)){
 			return;
 		}
 
 	//commodity出力
-		fileoutput (args[0],"commodity.out",commodityNameMap,branchSaleMap);
-		if(!fileoutput (args[0],"commodity.out",commodityNameMap,branchSaleMap)){
+		if(!fileoutput (args[0],"commodity.out",commodityNameMap,commoditySaleMap)){
 			return;
 		}
 	}
@@ -176,6 +171,7 @@ public class Salescalcuration {
 		String fileSeparator = System.getProperty("file.separator");
 		File branchfile = new File(dirPass+ fileSeparator+fileName);
 		BufferedWriter bw = null;
+
 		try{
 			FileWriter fw = new FileWriter (branchfile);
 			bw = new BufferedWriter(fw);
@@ -249,3 +245,6 @@ public class Salescalcuration {
 		return true;
 	}
 }
+
+//商品定義ファイルの確認
+

@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 public class Salescalcuration {
@@ -26,8 +25,8 @@ public class Salescalcuration {
 
 
 		//1.支店定義ファイルの読み込み
-		HashMap<String, String> branchNameMap = new HashMap<String, String>();
-		HashMap<String, Long> branchSaleMap = new HashMap<String, Long>();
+		HashMap<String, String> branchNameMap = new HashMap<>();
+		HashMap<String, Long> branchSaleMap = new HashMap<>();
 		BufferedReader br = null;
 		if(!fileInput(args[0], "branch.lst", branchNameMap, branchSaleMap, "^[0-9]{3}$", "支店")){
 			return;
@@ -35,8 +34,8 @@ public class Salescalcuration {
 
 
 		//2.商品定義ファイルの読み込み
-		HashMap<String, String> commodityNameMap = new HashMap<String, String>();
-		HashMap<String, Long> commoditySaleMap = new HashMap<String, Long>();
+		HashMap<String, String> commodityNameMap = new HashMap<>();
+		HashMap<String, Long> commoditySaleMap = new HashMap<>();
 
 		if(!fileInput(args[0], "commodity.lst", commodityNameMap, commoditySaleMap, "^\\w{8}$", "商品")){
 			return;
@@ -75,7 +74,7 @@ public class Salescalcuration {
 
 
 			//判定処理
-			for	(int i = 0 ; i < rcdlist.size(); i++){
+			for (int i = 0 ; i < rcdlist.size(); i++){
 				//変数指定
 				String branchcode;
 				String commoditycode;
@@ -95,7 +94,7 @@ public class Salescalcuration {
 				}
 
 				if((sales = br.readLine()) == null){
-					System.out.println(rcdlist.get(i).getName() + "のフォーマットが不正です");
+					System.out.println(rcdlist.get(i).getName() + "の売上金額のフォーマットが不正です");
 					return;
 				}
 
@@ -122,7 +121,7 @@ public class Salescalcuration {
 				Long totalbranch = Long.parseLong(sales) + branchSaleMap.get(branchcode);
 				Long totalcommodity = Long.parseLong(sales) + commoditySaleMap.get(commoditycode);
 
-				if(totalbranch >= 10000000000L || totalcommodity >= 10000000000L){
+				if(totalbranch.toString().length() >= 10 || totalcommodity.toString().length() > 10){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
@@ -160,19 +159,19 @@ public class Salescalcuration {
 	}
 
 	//メッソド分け(集計結果出力)
-	public static boolean fileOutput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String,Long> SaleMap){
+	public static boolean fileOutput(String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String,Long> SaleMap){
 		File branchfile = new File(dirPass, fileName);
 		BufferedWriter bw = null;
 
 		try{
-			FileWriter fw = new FileWriter (branchfile);
+			FileWriter fw = new FileWriter(branchfile);
 			bw = new BufferedWriter(fw);
 
-			List<Map.Entry<String,Long>> entries =new ArrayList<Map.Entry<String,Long>>(SaleMap.entrySet());
-			Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {
+			List<Entry<String,Long>> entries =new ArrayList<Entry<String,Long>>(SaleMap.entrySet());
+			Collections.sort(entries, new Comparator<Entry<String,Long>>() {
 
 	            public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2) {
-	                return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
+	                return (entry2.getValue()).compareTo(entry1.getValue());
 	            }
 	        });
 
@@ -197,14 +196,14 @@ public class Salescalcuration {
 	}
 
 	//メソッド分け(ファイルの読み込み)
-	public static boolean fileInput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String, Long> SaleMap, String judge, String Name){
+	public static boolean fileInput(String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String, Long> SaleMap, String judgment, String codeName){
 
 		BufferedReader br = null;
 		try{
-			File file = new File (dirPass, fileName);
+			File file = new File(dirPass, fileName);
 
 	        if(!file.exists()){
-	        	System.out.println(Name + "定義ファイルが存在しません");
+	        	System.out.println(codeName + "定義ファイルが存在しません");
 	        	return false;
 	    	}
 			FileReader fr = new FileReader(file);
@@ -213,8 +212,8 @@ public class Salescalcuration {
 			while((s = br.readLine()) != null){
 
 				String[] data = s.split(",");
-				if(data.length != 2 || !data[0].matches(judge)){
-		        	System.out.println(Name + "定義ファイルのフォーマットが不正です");
+				if(data.length != 2 || !data[0].matches(judgment)){
+		        	System.out.println(codeName + "定義ファイルのフォーマットが不正です");
 		        	return false;
 		        }
 				NameMap.put(data[0], data[1]);

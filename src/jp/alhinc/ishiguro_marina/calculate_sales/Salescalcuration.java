@@ -29,7 +29,7 @@ public class Salescalcuration {
 		HashMap<String, String> branchNameMap = new HashMap<String, String>();
 		HashMap<String, Long> branchSaleMap = new HashMap<String, Long>();
 		BufferedReader br = null;
-		if(!fileinput(args[0], "branch.lst", branchNameMap, branchSaleMap, "^[0-9]{3}$", "支店")){
+		if(!fileInput(args[0], "branch.lst", branchNameMap, branchSaleMap, "^[0-9]{3}$", "支店")){
 			return;
 		}
 
@@ -38,7 +38,7 @@ public class Salescalcuration {
 		HashMap<String, String> commodityNameMap = new HashMap<String, String>();
 		HashMap<String, Long> commoditySaleMap = new HashMap<String, Long>();
 
-		if(!fileinput(args[0], "commodity.lst", commodityNameMap, commoditySaleMap, "^\\w{8}$", "商品")){
+		if(!fileInput(args[0], "commodity.lst", commodityNameMap, commoditySaleMap, "^\\w{8}$", "商品")){
 			return;
 		}
 
@@ -149,18 +149,18 @@ public class Salescalcuration {
 
 		//4.集計結果出力
 		//branch出力
-		if(!fileoutput (args[0], "branch.out", branchNameMap, branchSaleMap)){
+		if(!fileOutput (args[0], "branch.out", branchNameMap, branchSaleMap)){
 			return;
 		}
 
 		//commodity出力
-		if(!fileoutput (args[0], "commodity.out", commodityNameMap, commoditySaleMap)){
+		if(!fileOutput (args[0], "commodity.out", commodityNameMap, commoditySaleMap)){
 			return;
 		}
 	}
 
 	//メッソド分け(集計結果出力)
-	public static boolean fileoutput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String,Long> SaleMap){
+	public static boolean fileOutput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String,Long> SaleMap){
 		File branchfile = new File(dirPass, fileName);
 		BufferedWriter bw = null;
 
@@ -197,7 +197,7 @@ public class Salescalcuration {
 	}
 
 	//メソッド分け(ファイルの読み込み)
-	public static boolean fileinput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String, Long> SaleMap, String judge, String Name){
+	public static boolean fileInput (String dirPass, String fileName, HashMap<String, String> NameMap, HashMap<String, Long> SaleMap, String judge, String Name){
 
 		BufferedReader br = null;
 		try{

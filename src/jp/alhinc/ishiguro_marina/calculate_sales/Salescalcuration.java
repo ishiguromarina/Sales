@@ -27,7 +27,6 @@ public class Salescalcuration {
 		//1.支店定義ファイルの読み込み
 		HashMap<String, String> branchNameMap = new HashMap<>();
 		HashMap<String, Long> branchSaleMap = new HashMap<>();
-
 		if(!fileInput(args[0], "branch.lst", branchNameMap, branchSaleMap, "^[0-9]{3}$", "支店")){
 			return;
 		}
@@ -93,7 +92,7 @@ public class Salescalcuration {
 				}
 
 				if((sales = br.readLine()) == null){
-					System.out.println(rcdlist.get(i).getName() + "のフォーマットが不正です");
+					System.out.println(rcdlist.get(i).getName() + "の売上金額のフォーマットが不正です");
 					return;
 				}
 
